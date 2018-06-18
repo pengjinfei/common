@@ -1,5 +1,7 @@
 package com.pengjinfei.common.job;
 
+import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperConfiguration;
+import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperRegistryCenter;
 import com.pengjinfei.common.job.console.ConsoleMvcConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -34,5 +36,15 @@ public class ElasticjobAutoConfiguration {
         registrationBean.setLoadOnStartup(1);
         registrationBean.setName("elasticjob");
         return registrationBean;
+    }
+
+    @Bean
+    public ZookeeperConfiguration zookeeperConfiguration() {
+        return new ZookeeperConfiguration(properties.getZkAddressList(), properties.getNamespace());
+    }
+
+    @Bean(initMethod = "init")
+    public ZookeeperRegistryCenter registryCenter() {
+        return new ZookeeperRegistryCenter(zookeeperConfiguration());
     }
 }
